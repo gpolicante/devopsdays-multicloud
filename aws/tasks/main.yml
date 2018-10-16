@@ -1,0 +1,11 @@
+---
+# tasks file for aws
+
+- name: criando chave de ssh 
+  include: key.yaml
+
+- name: criando security group
+  include: sec.yaml
+ 
+- name: subindo infraestrutura na aws 
+  include: ec2.yaml

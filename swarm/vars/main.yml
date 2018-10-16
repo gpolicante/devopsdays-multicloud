@@ -1,0 +1,4 @@
+---
+# vars file for swarm
+#
+ip: ansible_default_ipv4.address 

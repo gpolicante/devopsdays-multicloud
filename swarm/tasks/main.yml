@@ -1,0 +1,47 @@
+
+
+
+
+- name: instalando python-pip
+  package:
+   name:
+    - python3-pip
+
+- name: instalando docker-py
+  pip:
+   name:
+     -  docker
+
+- name: pegando ip manager
+  shell: "hostname -I | awk '{print $1}'"
+  register: ipmanager
+  when: ansible_hostname == "manager"
+
+- name: criando lookup do ip manager
+  shell: "echo {{ipmanager.stdout}} > /tmp/ip "
+  delegate_to: 127.0.0.1
+  when: ansible_hostname == "manager"
+
+- name: iniciando o manager na aws 
+  docker_swarm:
+   state: present 
+   advertise_addr: eth0
+  register: swarm_info 
+  when: ansible_hostname == "manager"
+
+- name: criando lookup do jointoker 
+  shell: "echo {{swarm_info.swarm_facts.JoinTokens.Worker}} > /tmp/join"
+  delegate_to: 127.0.0.1
+  when: ansible_hostname == "manager"
+
+
+
+- name: pegando a worker e adicionando no manager 
+  docker_swarm:
+    state: join
+    advertise_addr: eth0
+    join_token: "{{lookup('file','/tmp/join')}}"
+    remote_addrs: "{{lookup('file', '/tmp/ip')}}" 
+  when: ansible_hostname == "worker" or ansible_hostname == "worker1" or ansible_hostname == "worker2" 
+
+

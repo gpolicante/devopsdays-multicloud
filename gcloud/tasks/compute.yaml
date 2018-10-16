@@ -1,0 +1,16 @@
+ - name: rodando instancia
+   gce: 
+    instance_names: "{{item.nome}}"
+    machine_type: "{{item.maquina}}"
+    image: "{{item.imagem}}"
+    service_account_email: "{{lookup('env','ACCOUNT_EMAIL' ) }}"
+    credentials_file: "{{lookup('env','KEY_GCP') }}"
+    project_id: "{{lookup('env','PROJECT_ID' ) }}"
+    tags:
+      - "{{item.tag}}"
+      - http-server
+    metadata: '{ "startup-script" : "curl -fsSL https://get.docker.com -o get-docker.sh ; sh get-docker.sh" }'
+   with_items:
+         - { nome: manager, maquina: n1-standard-1, imagem: debian-9, tag: manager }
+         - { nome: worker1, maquina: n1-standard-1, imagem: debian-9, tag: worker }
+         - { nome: worker2, maquina: n1-standard-1, imagem: debian-9, tag: worker }

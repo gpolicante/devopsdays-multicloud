@@ -1,0 +1,25 @@
+- name: create security group
+  ec2_group:
+          name: devopsdays
+          description: rules devopsdays
+          vpc_id: vpc-042d8935eb6faabbf
+          aws_access_key: "{{ lookup('env','AWS_ACCESS_KEY' ) }}"
+          aws_secret_key: "{{ lookup('env','AWS_SECREY_KEY') }}" 
+          region: us-east-2
+          rules:
+                  - proto: tcp
+                    from_port: 80
+                    to_port: 80
+                    cidr_ip: 0.0.0.0/0
+                  - proto: tcp
+                    from_port: 22
+                    to_port: 22
+                    cidr_ip: 0.0.0.0/0 
+                  - proto: tcp
+                    from_port: 2377
+                    to_port: 2377
+                    cidr_ip: 192.168.200.0/24
+                  - proto: tcp
+                    from_port: 7946
+                    to_port: 7946
+                    cidr_ip: 192.168.200.0/24

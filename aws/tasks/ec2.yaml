@@ -1,0 +1,26 @@
+- name: criando maquinas na aws
+  ec2: 
+   key_name: devopsdays
+   aws_access_key: "{{ lookup('env','AWS_ACCESS_KEY' ) }}"
+   aws_secret_key: "{{ lookup('env','AWS_SECREY_KEY') }}" 
+   region: "{{item.region}}"
+   group: "{{item.security}}"
+   instance_type: "{{item.instance}}"
+   image: "{{item.image}}"
+   wait: yes
+   id: "{{item.id}}"
+   state: present
+   vpc_subnet_id: subnet-0a3fd460e5db21c3e
+   count: "{{item.count}}"
+   user_data: |
+          #!/bin/bash
+          apt update 
+          curl -fsSL get.docker.com -o get-docker.sh
+          sh get-docker.sh
+   instance_tags:
+           maquina: "{{item.type}}"
+  with_items:
+          - { instance: t2.medium, id: 7, image: ami-0f65671a86f061fcd, security: devopsdays, count: 2, type: worker, region: us-east-2 }
+          - { instance: t2.medium, id: 8, image: ami-0f65671a86f061fcd, security: devopsdays, count: 1, type: manager, region: us-east-2 }
+          
+

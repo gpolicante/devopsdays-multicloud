@@ -1,0 +1,6 @@
+---
+# tasks file for gcloud
+#
+#
+- name: create compute instance 
+  include: compute.yaml 
